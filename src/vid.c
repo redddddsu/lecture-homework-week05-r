@@ -18,8 +18,10 @@ uint8_t cursor;
 int volatile* fb;
 int row, col, scroll_row;
 unsigned char* font;
-int WIDTH = 640;  // scan line width, default to 640
-int HEIGHT = 480;
+// int WIDTH = 640;  // scan line width, default to 640
+// int HEIGHT = 480;
+int WIDTH = 800;
+int HEIGHT = 600;
 char* tab = "0123456789ABCDEF";
 
 int fbuf_init() {
@@ -173,31 +175,54 @@ int kprints(char* s) {
 }
 
 int krpx(int x) {
-  char c;
-  if (x) {
-    c = tab[x % 16];
-    krpx(x / 16);
+  char c[32];
+  int i = 0;
+
+  if (!x) {
+    kputc('0');
+    return 0;
   }
-  kputc(c);
+
+  while(x) {
+    c[i] = tab[x % 16];
+    x = (x /16);
+    i++;
+  }
+
+  while (i--) {
+    kputc(c[i]);
+  }
+  return 0;
+  
 }
 
 int kprintx(int x) {
-  kputc('0');
-  kputc('x');
   if (x == 0)
     kputc('0');
   else
     krpx(x);
   kputc(' ');
+  return 0;
 }
 
 int krpu(int x) {
-  char c;
-  if (x) {
-    c = tab[x % 10];
-    krpu(x / 10);
+  char c[32];
+  int i = 0;
+
+  if (!x) {
+    kputc('0');
+    return 0;
   }
-  kputc(c);
+
+  while(x) {
+    c[i] = tab[x % 10];
+    x = (x / 10);
+    i++;
+  }
+  while(i--) {
+    kputc(c[i]);
+  }
+  return 0;
 }
 
 int kprintu(int x) {
